@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Title of the document</title>
+	<meta charset="utf-8"/>
+	<style>
+	
+		#wrap{
+			padding:40px;
+			
+			height:300px;
+		}
+		.title{
+			border:1px solid #000;
+			display:inline-block;
+			padding:10px 10px 40px 10px;
+			color:#000;
+			font-weight: bold;
+		}
+
+		#content{
+			margin-top:20px;
+		}
+		#left{
+			
+			width:48%;
+			
+			
+			float:left;
+		}
+		
+		#right{
+			
+			width:48%;
+			
+			
+			float:right;
+		}
+		#stoprobot{			
+			width:48%;						
+			float:left;
+		}
+		#runrobot{				
+			width:48%;						
+			float:right;
+		}
+		#right button{
+			
+		}
+	</style>
+	
+</head>
+
+<body>
+	<div id="wrap">
+	
+		<div style="text-align:center;">
+			<div class="title">Giám sát hoạt động của robot delta</div>
+			<div>
+			Account đang đăng  nhập:
+			</div>
+			
+		</div>
+		<div id="content">
+			<div id="left">
+				<table width="100%" border="1">
+					<thead>
+						<tr>
+							<th>
+								STT phôi
+							</th>
+							<th>
+								Mã phôi
+							</th>
+							<th>
+								Tình trạng
+							</th>
+							<th>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								1
+							</td>
+							<td>
+							</td>
+							<td>
+							</td>
+							<td>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								2
+							</td>
+							<td>
+							</td>
+							<td>
+							</td>
+							<td>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								3
+							</td>
+							<td>
+							</td>
+							<td>
+							</td>
+							<td>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								4
+							</td>
+							<td>
+							</td>
+							<td>
+							</td>
+							<td>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								5
+							</td>
+							<td>
+							</td>
+							<td>
+							</td>
+							<td>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="right">
+				<p>
+				Phôi hiện đang xử lý:
+				</p>
+				<p>
+				Số phôi đã xử lý:
+				</p>
+				<div id="stoprobot">
+					<canvas id="stopcanvas" width="200" height="200"></canvas>
+					<button>Ngưng robot</button>
+				</div>
+				<div id="runrobot">
+					<canvas id="runcanvas" width="200" height="200"></canvas>
+					<button>Chạy robot</button>
+				</div>
+				
+			</div>		
+		</div>		
+		
+		
+	</div>
+</body>
+<script type="text/javascript">
+	  var canvas = document.getElementById('stopcanvas');
+      var context = canvas.getContext('2d');
+      var centerX = canvas.width / 2;
+      var centerY = canvas.height / 2;
+      var radius = 70;
+
+      context.beginPath();
+      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      context.fillStyle = 'red';
+      context.fill();
+      context.lineWidth = 5;
+      context.strokeStyle = 'red';
+      context.stroke();
+	  
+	  var canvas1 = document.getElementById('runcanvas');
+      var context1 = canvas1.getContext('2d');
+      var centerX1 = canvas1.width / 2;
+      var centerY1 = canvas1.height / 2;
+      var radius1 = 70;
+
+      context1.beginPath();
+      context1.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      context1.fillStyle = '#5a9bd5';
+      context1.fill();
+      context1.lineWidth = 5;
+      context1.strokeStyle = '#5a9bd5';
+      context1.stroke();
+	  
+    </script>
+  </body>
+</html>      
+</script>
+</html>
