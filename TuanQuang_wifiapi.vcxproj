@@ -75,6 +75,8 @@
     <ProjectCapability Include="VisualMicro" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="dashboard.html" />
+    <None Include="dashboard_min.html" />
     <None Include="TuanQuang_wifiapi.ino">
       <FileType>CppCode</FileType>
     </None>

@@ -25,6 +25,8 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
 
+#define _VERSION_ "v0.2"
+
 // Set these to run example.
 #define FIREBASE_HOST "tuanquang-wifiapi.firebaseio.com"
 #define FIREBASE_AUTH "33Hx0B3ywsAgHVoBT412VStfI9esAyn6ZA0cqBlB"
@@ -97,7 +99,7 @@ void handleGetDataApi() {
 	digitalWrite(led, 1);
 	FirebaseObject data = Firebase.get("/"); //đọc database
 	if (Firebase.success()) { //nếu đọc thành công thì tách dữ liệu ra thành từng biến
-		StaticJsonBuffer<200> jsBuffer;
+		StaticJsonBuffer<500> jsBuffer;
 		JsonObject& jsData = jsBuffer.createObject();
 
 		jsData["acc"] = data.getString("acc");
@@ -121,7 +123,7 @@ void handleGetDataApi() {
 
 		String jsDataStr;
 		jsData.printTo(jsDataStr);
-
+		//Serial.println(jsDataStr);
 		//gửi xuống client
 		server.send(200, "text/plain", jsDataStr);
 	}
@@ -164,8 +166,9 @@ bool updateDatabase(String path, String data) {
 
 void setup() {
 	Serial.begin(115200);
-
+	Serial.println("Version: " _VERSION_);
 	// connect to wifi.
+	WiFi.mode(WIFI_STA);
 	WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 	//WiFiManager wifiManager;
 	//wifiManager.autoConnect("TUANQUANG");
@@ -181,9 +184,9 @@ void setup() {
 
 	Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 
-	if (MDNS.begin("esp8266")) {
-		Serial.println("MDNS responder started");
-	}
+	//if (MDNS.begin("esp8266")) {
+	//	Serial.println("MDNS responder started");
+	//}
 	server.on("/", handleRoot);
 	server.on("/apidata", handleGetDataApi);
 	server.on("/inline", []() {
