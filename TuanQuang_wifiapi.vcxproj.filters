@@ -16,10 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="TuanQuang_wifiapi.ino" />
-    <None Include="dashboard.html">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="dashboard_min.html">
+    <None Include="dashboard v0.2.html">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -27,5 +24,13 @@
     <ClInclude Include="__vm\.TuanQuang_wifiapi.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dashboard v0.2 min.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="apidata.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
