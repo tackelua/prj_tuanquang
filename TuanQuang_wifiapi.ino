@@ -1,23 +1,4 @@
-﻿//
-// Copyright 2015 Google Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-
-// FirebaseDemo_ESP8266 is a sample that demo the different functions
-// of the FirebaseArduino API.
-
-#include <ArduinoJson.hpp>
+﻿#include <ArduinoJson.hpp>
 #include <ArduinoJson.h>
 #include <ESP8266mDNS.h>
 #include <WiFiManager.h>
@@ -25,7 +6,7 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
 
-#define _VERSION_ "v0.3"
+#define _VERSION_ "v0.4"
 
 // Set these to run example.
 #define FIREBASE_HOST "tuanquang-wifiapi.firebaseio.com"
@@ -36,7 +17,7 @@
  * Need change "FirebaseObject.h" 
  * #define FIREBASE_JSONBUFFER_SIZE JSON_OBJECT_SIZE(32)
  * to
- * #define FIREBASE_JSONBUFFER_SIZE JSON_OBJECT_SIZE(32)
+ * #define FIREBASE_JSONBUFFER_SIZE JSON_OBJECT_SIZE(35)
  */
 
 ESP8266WebServer server(80);
@@ -44,7 +25,7 @@ ESP8266WebServer server(80);
 const int led = LED_BUILTIN;
 
 const char text_html[] PROGMEM = "text/html";
-const char HTML_WEBPAGE_PROGMEM[] PROGMEM = "<!DOCTYPE html><html><head> <title>Title of the document</title> <meta charset=\"utf-8\"/> <style>#wrap{max-width: 1080px; padding: 40px; height: 300px; margin: 0 auto;}.title{border: 1px solid #000; display: inline-block; padding: 10px 10px 40px 10px; color: #000; font-weight: bold;}.title-right-parent{text-align: center;}.title-right{border: 1px solid #000; display: inline-block; padding: 10px; color: #000; font-weight: bold;}#content{margin-top: 20px;}#left{width: 48%; float: left;}#right{width: 48%; float: right;}#right button{}table{border-collapse: collapse;text-align: center;}table,th,td{border: 1px solid black; padding: 4px; height: 20px;}table td{}.create-cirle{width: 60px; height: 60px; background: red; -moz-border-radius: 50px; -webkit-border-radius: 50px; border-radius: 50%; /*display: inline-block;*/}.button-control{cursor: pointer; margin-top: 8px; width: 100px; padding: 4px; border: 1px solid black; background: transparent;}</style></head><body> <div id=\"wrap\"> <div style=\"text-align:center;\"> <div class=\"title\">Giám sát hoạt động của robot delta</div><div style=\"text-align: right;\">Account đang đăng nhập: <spand id=\"acc\"></span> </div></div><div id=\"content\"> <div id=\"left\"> <table width=\"100%\"> <thead> <tr> <th>STT phôi</th> <th>Mã phôi</th> <th>Tình trạng</th> <th>Ghi chú</th> </tr></thead> <tbody> <tr> <td>1</td><td id=\"phoi1\"></td><td id=\"stt1\"></td><td id=\"note1\"></td></tr><tr> <td>2</td><td id=\"phoi2\"></td><td id=\"stt2\"></td><td id=\"note2\"></td></tr><tr> <td>3</td><td id=\"phoi3\"></td><td id=\"stt3\"></td><td id=\"note3\"></td></tr><tr> <td>4</td><td id=\"phoi4\"></td><td id=\"stt4\"></td><td id=\"note4\"></td></tr><tr> <td>5</td><td id=\"phoi5\"></td><td id=\"stt5\"></td><td id=\"note5\"></td></tr><tr> <td>6</td><td id=\"phoi6\"></td><td id=\"stt6\"></td><td id=\"note6\"></td></tr><tr> <td>7</td><td id=\"phoi7\"></td><td id=\"stt7\"></td><td id=\"note7\"></td></tr><tr> <td>8</td><td id=\"phoi8\"></td><td id=\"stt8\"></td><td id=\"note8\"></td></tr></tbody> </table> </div><div id=\"right\"> <div class=\"title-right-parent\"> <div class=\"title-right\">Vị trí robot</div></div><table style=\"margin-top: 12px;\" width=\"100%\"> <thead> <tr> <th>X</th> <th>Y</th> <th>Z</th> </tr></thead> <tbody> <tr> <td id=\"rb_x\"></td><td id=\"rb_y\"></td><td id=\"rb_z\"></td></tr></tbody> </table> <div style=\"margin-top: 12px;\" class=\"title-right-parent\"> <div class=\"title-right\">Vị trí Động Cơ</div></div><table style=\"margin-top: 12px;\" width=\"100%\"> <thead> <tr> <th>1</th> <th>2</th> <th>3</th> </tr></thead> <tbody> <tr> <td id=\"dc1\"></td><td id=\"dc2\"></td><td id=\"dc3\"></td></tr></tbody> </table> <div> <div style=\"margin-top: 8px; min-width: 240px;\" class=\"title-right\"> Phôi hiện đang xử lý: <span id=\"num_xuly\"></span> </div></div><div> <div style=\"margin-top: 8px; min-width: 240px;\" class=\"title-right\"> Số phôi đã xử lý: <span id=\"num_done\"></span> </div></div><div style=\"margin-top: 12px;\"> <div style=\"float: right; margin-left: 12px;\"> <div style=\"background: #5a9bd5;margin-left: 20px;\" class=\"create-cirle\"> </div><button id=\"runrobot\" class=\"button-control\">Chạy robot</button> </div><div style=\"float: right;\"> <div style=\"background: red; margin-left: 20px;\" class=\"create-cirle\"> </div><button id=\"stoprobot\" class=\"button-control\">Ngưng robot</button> </div></div></div><div style=\"clear: both;padding-top: 20px;\"> <div style=\"border: 1px solid green; height: 200px;text-align: center;\"> Camera </div></div></div></div></div></body><script type=\"text/javascript\">setInterval(function(){updateData();}, 3000); function updateData(){var xhttp=new XMLHttpRequest(); xhttp.onreadystatechange=function(){if (this.readyState==4 && this.status==200){var obj=JSON.parse(this.responseText); document.getElementById(\"acc\").innerHTML=obj.acc; document.getElementById(\"num_done\").innerHTML=obj.num_done; document.getElementById(\"num_xuly\").innerHTML=obj.num_xuly; document.getElementById(\"phoi1\").innerHTML=obj.phoi1; document.getElementById(\"phoi2\").innerHTML=obj.phoi2; document.getElementById(\"phoi3\").innerHTML=obj.phoi3; document.getElementById(\"phoi4\").innerHTML=obj.phoi4; document.getElementById(\"phoi5\").innerHTML=obj.phoi5; document.getElementById(\"phoi6\").innerHTML=obj.phoi6; document.getElementById(\"phoi7\").innerHTML=obj.phoi7; document.getElementById(\"phoi8\").innerHTML=obj.phoi8; document.getElementById(\"stt1\").innerHTML=obj.stt1; document.getElementById(\"stt2\").innerHTML=obj.stt2; document.getElementById(\"stt3\").innerHTML=obj.stt3; document.getElementById(\"stt4\").innerHTML=obj.stt4; document.getElementById(\"stt5\").innerHTML=obj.stt5; document.getElementById(\"stt6\").innerHTML=obj.stt6; document.getElementById(\"stt7\").innerHTML=obj.stt7; document.getElementById(\"stt8\").innerHTML=obj.stt8; document.getElementById(\"note1\").innerHTML=obj.note1; document.getElementById(\"note2\").innerHTML=obj.note2; document.getElementById(\"note3\").innerHTML=obj.note3; document.getElementById(\"note4\").innerHTML=obj.note4; document.getElementById(\"note5\").innerHTML=obj.note5; document.getElementById(\"note6\").innerHTML=obj.note6; document.getElementById(\"note7\").innerHTML=obj.note7; document.getElementById(\"note8\").innerHTML=obj.note8; document.getElementById(\"rb_x\").innerHTML=obj.rb_x; document.getElementById(\"rb_y\").innerHTML=obj.rb_y; document.getElementById(\"rb_z\").innerHTML=obj.rb_z; document.getElementById(\"dc1\").innerHTML=obj.dc1; document.getElementById(\"dc2\").innerHTML=obj.dc2; document.getElementById(\"dc3\").innerHTML=obj.dc3;}}; xhttp.open(\"GET\", \"/apidata\", true); xhttp.send();}</script></html>";
+const char HTML_WEBPAGE_PROGMEM[] PROGMEM = "<!DOCTYPE html><html><head> <title>Title of the document</title> <meta charset=\"utf-8\"/> <style>#wrap{max-width: 1080px; padding: 40px; height: 300px; margin: 0 auto;}.title{border: 1px solid #000; display: inline-block; padding: 10px 10px 40px 10px; color: #000; font-weight: bold;}.title-right-parent{text-align: center;}.title-right{border: 1px solid #000; display: inline-block; padding: 10px; color: #000; font-weight: bold;}#content{margin-top: 20px;}#left{width: 48%; float: left;}#right{width: 48%; float: right;}#right button{}table{border-collapse: collapse;text-align: center;}table,th,td{border: 1px solid black; padding: 4px; height: 20px;}table td{}.create-cirle{width: 60px; height: 60px; background: red; -moz-border-radius: 50px; -webkit-border-radius: 50px; border-radius: 50%; /*display: inline-block;*/}.button-control{cursor: pointer; margin-top: 8px; width: 100px; padding: 4px; border: 1px solid black; background: transparent;}</style></head><body> <div id=\"wrap\"> <div style=\"text-align:center;\"> <div class=\"title\">Giám sát hoạt động của robot delta</div><div style=\"text-align: right;\">Account đang đăng nhập: <spand id=\"acc\"></span> </div></div><div id=\"content\"> <div id=\"left\"> <table width=\"100%\"> <thead> <tr> <th>STT phôi</th> <th>Mã phôi</th> <th>Tình trạng</th> <th>Ghi chú</th> </tr></thead> <tbody> <tr> <td>1</td><td id=\"phoi1\"></td><td id=\"stt1\"></td><td id=\"note1\"></td></tr><tr> <td>2</td><td id=\"phoi2\"></td><td id=\"stt2\"></td><td id=\"note2\"></td></tr><tr> <td>3</td><td id=\"phoi3\"></td><td id=\"stt3\"></td><td id=\"note3\"></td></tr><tr> <td>4</td><td id=\"phoi4\"></td><td id=\"stt4\"></td><td id=\"note4\"></td></tr><tr> <td>5</td><td id=\"phoi5\"></td><td id=\"stt5\"></td><td id=\"note5\"></td></tr><tr> <td>6</td><td id=\"phoi6\"></td><td id=\"stt6\"></td><td id=\"note6\"></td></tr><tr> <td>7</td><td id=\"phoi7\"></td><td id=\"stt7\"></td><td id=\"note7\"></td></tr><tr> <td>8</td><td id=\"phoi8\"></td><td id=\"stt8\"></td><td id=\"note8\"></td></tr></tbody> </table> </div><div id=\"right\"> <div class=\"title-right-parent\"> <div class=\"title-right\">Vị trí robot</div></div><table style=\"margin-top: 12px;\" width=\"100%\"> <thead> <tr> <th>X</th> <th>Y</th> <th>Z</th> </tr></thead> <tbody> <tr> <td id=\"rb_x\"></td><td id=\"rb_y\"></td><td id=\"rb_z\"></td></tr></tbody> </table> <div style=\"margin-top: 12px;\" class=\"title-right-parent\"> <div class=\"title-right\">Vị trí Động Cơ</div></div><table style=\"margin-top: 12px;\" width=\"100%\"> <thead> <tr> <th>1</th> <th>2</th> <th>3</th> </tr></thead> <tbody> <tr> <td id=\"dc1\"></td><td id=\"dc2\"></td><td id=\"dc3\"></td></tr></tbody> </table> <div> <div style=\"margin-top: 8px; min-width: 240px;\" class=\"title-right\"> Phôi hiện đang xử lý: <span id=\"num_xuly\"></span> </div></div><div> <div style=\"margin-top: 8px; min-width: 240px;\" class=\"title-right\"> Số phôi đã xử lý: <span id=\"num_done\"></span> </div></div><div style=\"margin-top: 12px;\"> <div style=\"float: right; margin-left: 12px;\"> <div style=\"background: #5a9bd5;margin-left: 20px;\" class=\"create-cirle\"> </div><button id=\"runrobot\" class=\"button-control\" onclick=\"robotrun()\">Chạy robot</button> </div><div style=\"float: right;\"> <div style=\"background: red; margin-left: 20px;\" class=\"create-cirle\"> </div><button id=\"stoprobot\" class=\"button-control\" onclick=\"robotstop()\">Ngưng robot</button> </div></div></div><div style=\"clear: both;padding-top: 20px;\"> <div style=\"border: 1px solid green; height: 200px;text-align: center;\"> Camera </div></div></div></div></div></body><script type=\"text/javascript\">setInterval(function(){updateData();}, 3000); function updateData(){var xhttp=new XMLHttpRequest(); xhttp.onreadystatechange=function(){if (this.readyState==4 && this.status==200){var obj=JSON.parse(this.responseText); document.getElementById(\"acc\").innerHTML=obj.acc; document.getElementById(\"num_done\").innerHTML=obj.num_done; document.getElementById(\"num_xuly\").innerHTML=obj.num_xuly; document.getElementById(\"phoi1\").innerHTML=obj.phoi1; document.getElementById(\"phoi2\").innerHTML=obj.phoi2; document.getElementById(\"phoi3\").innerHTML=obj.phoi3; document.getElementById(\"phoi4\").innerHTML=obj.phoi4; document.getElementById(\"phoi5\").innerHTML=obj.phoi5; document.getElementById(\"phoi6\").innerHTML=obj.phoi6; document.getElementById(\"phoi7\").innerHTML=obj.phoi7; document.getElementById(\"phoi8\").innerHTML=obj.phoi8; document.getElementById(\"stt1\").innerHTML=obj.stt1; document.getElementById(\"stt2\").innerHTML=obj.stt2; document.getElementById(\"stt3\").innerHTML=obj.stt3; document.getElementById(\"stt4\").innerHTML=obj.stt4; document.getElementById(\"stt5\").innerHTML=obj.stt5; document.getElementById(\"stt6\").innerHTML=obj.stt6; document.getElementById(\"stt7\").innerHTML=obj.stt7; document.getElementById(\"stt8\").innerHTML=obj.stt8; document.getElementById(\"note1\").innerHTML=obj.note1; document.getElementById(\"note2\").innerHTML=obj.note2; document.getElementById(\"note3\").innerHTML=obj.note3; document.getElementById(\"note4\").innerHTML=obj.note4; document.getElementById(\"note5\").innerHTML=obj.note5; document.getElementById(\"note6\").innerHTML=obj.note6; document.getElementById(\"note7\").innerHTML=obj.note7; document.getElementById(\"note8\").innerHTML=obj.note8; document.getElementById(\"rb_x\").innerHTML=obj.rb_x; document.getElementById(\"rb_y\").innerHTML=obj.rb_y; document.getElementById(\"rb_z\").innerHTML=obj.rb_z; document.getElementById(\"dc1\").innerHTML=obj.dc1; document.getElementById(\"dc2\").innerHTML=obj.dc2; document.getElementById(\"dc3\").innerHTML=obj.dc3;}}; xhttp.open(\"GET\", \"/apidata\", true); xhttp.send();}function robotrun(){var xhttp=new XMLHttpRequest(); xhttp.onreadystatechange=function(){if (this.readyState==4 && this.status==200){if (this.responseText==\"run\"){alert(\"Robot run!\");}}}; xhttp.open(\"GET\", \"/run\", true); xhttp.send();}function robotstop(){var xhttp=new XMLHttpRequest(); xhttp.onreadystatechange=function(){if (this.readyState==4 && this.status==200){if (this.responseText==\"stop\"){alert(\"Robot stop!\");}}}; xhttp.open(\"GET\", \"/stop\", true); xhttp.send();}</script></html>";
 
 
 void handleRoot() {
@@ -192,6 +173,22 @@ void handleNotFound() {
 	digitalWrite(led, 0);
 }
 
+void handleRobotRun() {
+	Serial.println("/run");
+	digitalWrite(led, 1);
+	server.send(200, "text/plain", "run");
+	digitalWrite(led, 0);
+	robotRun();
+}
+
+void handleRobotStop() {
+	Serial.println("/stop");
+	digitalWrite(led, 1);
+	server.send(200, "text/plain", "stop");
+	digitalWrite(led, 0);
+	robotStop();
+}
+
 bool updateDatabase(String path, String data) {
 	//path ở đây gồm
 	//acc
@@ -205,6 +202,14 @@ bool updateDatabase(String path, String data) {
 	return Firebase.success();
 }
 
+void robotRun() {
+	Serial.println("Robot running.");
+	//viết thêm vào đây
+}
+void robotStop() {
+	Serial.println("Robot stoped.");
+	//viết thêm vào đây
+}
 
 void setup() {
 	Serial.begin(115200);

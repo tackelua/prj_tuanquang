@@ -210,12 +210,12 @@
                        <div style="float: right; margin-left: 12px;">
                            <div style="background: #5a9bd5;margin-left: 20px;" class="create-cirle">
                            </div>
-                           <button id="runrobot" class="button-control">Chạy robot</button>
+                           <button id="runrobot" class="button-control" onclick="robotrun()">Chạy robot</button>
                        </div>
                        <div style="float: right;">
                            <div style="background: red; margin-left: 20px;" class="create-cirle">
                            </div>
-                           <button id="stoprobot" class="button-control">Ngưng robot</button>
+                           <button id="stoprobot" class="button-control" onclick="robotstop()">Ngưng robot</button>
                        </div>
                    </div>
                </div>
@@ -232,8 +232,6 @@
 </div>
 </body>
 <script type="text/javascript">
-
-
     setInterval(function() {
         updateData();
     }, 3000);
@@ -285,6 +283,33 @@
         xhttp.open("GET", "/apidata", true);
         xhttp.send();
     }
+
+	function robotrun(){
+	var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                if (this.responseText == "run"){
+					alert("Robot run!");
+				}
+            }
+        };
+        xhttp.open("GET", "/run", true);
+        xhttp.send();
+	}
+
+	function robotstop(){
+	var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                if (this.responseText == "stop"){
+					alert("Robot stop!");
+				}
+            }
+        };
+        xhttp.open("GET", "/stop", true);
+        xhttp.send();
+	}
+
 </script>
 
 </html>
